@@ -215,6 +215,6 @@ Each module follows our **13-Step Teaching Format** (What, Why, Complete Code, E
 | **04** | [Docker Fundamentals](docs/04-docker-fundamentals.md) | ✅ Complete |
 | **05** | [Dockerfiles & Multi-Stage Builds](docs/05-dockerfiles-and-containerization.md) | ✅ Complete |
 | **06** | [Docker Compose Multi-Container Orchestration](docs/06-docker-compose.md) | ✅ Complete |
-| **07** | Git & GitHub Actions CI/CD | ⏳ Next |
-| **08-14**| Kubernetes Core to Production | Planned |
+| **07** | [Git & GitHub Actions CI/CD](docs/07-git-and-github-actions.md) | ✅ Complete |
+| **08-14**| Kubernetes Core to Production | ⏳ Next |
 | **15-18**| Terraform IaC & AWS EKS Deployment | Planned |

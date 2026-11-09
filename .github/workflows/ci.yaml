@@ -1,0 +1,93 @@
+name: CI - Code Quality & Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Security Hardening: Enforce least-privilege permissions
+permissions:
+  contents: read
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Backend Quality & Test Pipeline
+  # ----------------------------------------------------------------------------
+  backend:
+    name: Backend CI (Node.js & Tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Type Check (TypeScript)
+        run: npm run lint
+
+      - name: Run Automated Tests
+        run: npm test
+
+      - name: Build Production JavaScript
+        run: npm run build
+
+  # ----------------------------------------------------------------------------
+  # Frontend Quality & Build Pipeline
+  # ----------------------------------------------------------------------------
+  frontend:
+    name: Frontend CI (React & Vite)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Type Check (TypeScript)
+        run: npm run lint
+
+      - name: Build Static Production Assets
+        run: npm run build
+
+  # ----------------------------------------------------------------------------
+  # Kubernetes Manifest Validation (Future Ready)
+  # ----------------------------------------------------------------------------
+  k8s-validation:
+    name: Kubernetes Manifest Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Validate Kubernetes Manifests with Kubeconform
+        uses: yannh/kubeconform-action@v0.1.0
+        with:
+          k8s-version: '1.30.0'
+          files: 'kubernetes/**/*.yaml'
+        continue-on-error: true # Allows CI to pass while student completes future K8s modules
