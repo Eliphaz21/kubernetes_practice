@@ -91,3 +91,4 @@ jobs:
           k8s-version: '1.30.0'
           files: 'kubernetes/**/*.yaml'
         continue-on-error: true # Allows CI to pass while student completes future K8s modules
+

@@ -42,9 +42,6 @@ csec-kubernetes-learning/
 │   ├── Dockerfile                # Multi-stage Alpine container build (Milestone 2)
 │   └── .dockerignore             # Docker build exclusion rules
 │
-├── docker/                       # Docker architecture guides & cheat sheets
-│   └── README.md
-│
 ├── kubernetes/                   # Raw Kubernetes Declarative Manifests
 │   ├── 00-namespace/             # Cluster tenancy (csec-learning namespace)
 │   ├── 01-config/                # ConfigMaps and Secrets
