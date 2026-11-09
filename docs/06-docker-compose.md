@@ -137,3 +137,4 @@ docker compose down
 
 ### Step 13 – Production Connection
 Docker Compose is the standard tool for local full-stack development, integration test runners, and ephemeral pull-request preview environments. The declarative concepts learned here (services, ports, healthchecks, networks, dependencies) translate directly into Kubernetes Pods, Services, and Deployments.
+
