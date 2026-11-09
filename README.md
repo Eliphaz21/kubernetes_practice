@@ -200,7 +200,15 @@ npm run build
 
 ---
 
-## 7. Curriculum Guides (`docs/`)
+## 7. Kubernetes Hands-On Practice Guide
+
+> 📖 **Primary Student Manual**:  
+> For an interactive, zero-to-hero practice guide with complete copy-pasteable YAML files, exact `kubectl` commands, Minikube instructions, and troubleshooting, read:  
+> 👉 **[Complete Kubernetes Practice Handbook (docs/kubernetes-guide.md)](docs/kubernetes-guide.md)**
+
+---
+
+## 8. Curriculum Guides (`docs/`)
 
 Each module follows our **13-Step Teaching Format** (What, Why, Complete Code, Execute, Verify, Troubleshoot, Practice, Cleanup, Production Connection):
 
