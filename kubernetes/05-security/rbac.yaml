@@ -1,0 +1,31 @@
+# ==============================================================================
+# CSEC ASTU - Role-Based Access Control (RBAC) Demonstration
+# Implements the Principle of Least Privilege: read-only access to ConfigMaps
+# ==============================================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: csec-config-reader-role
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: csec-config-reader-binding
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+subjects:
+  - kind: ServiceAccount
+    name: csec-app-sa
+    namespace: csec-learning
+roleRef:
+  kind: Role
+  name: csec-config-reader-role
+  apiGroup: rbac.authorization.k8s.io

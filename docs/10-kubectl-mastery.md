@@ -171,3 +171,4 @@ No temporary custom resources were created in this module.
 
 ### Step 13 – Production Connection
 In production SRE environments, `kubectl` is combined with plugins (managed by `krew`), custom contexts (`kubectx`, `kubens`), and read-only RBAC roles to safely audit and debug live multi-cluster environments without risking production outages.
+

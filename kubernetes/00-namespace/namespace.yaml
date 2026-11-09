@@ -1,0 +1,14 @@
+# ==============================================================================
+# CSEC ASTU - Dedicated Kubernetes Namespace
+# Provides tenancy isolation, resource boundaries, and logical grouping
+# ==============================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: csec-learning
+  labels:
+    organization: csec-astu
+    division: development
+    environment: training
+    app.kubernetes.io/managed-by: manual
+

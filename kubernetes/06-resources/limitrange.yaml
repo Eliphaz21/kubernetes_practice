@@ -1,0 +1,24 @@
+# ==============================================================================
+# CSEC ASTU - Namespace LimitRange
+# Defines default and min/max resource constraints for individual containers
+# ==============================================================================
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: csec-container-limits
+  namespace: csec-learning
+spec:
+  limits:
+    - type: Container
+      default: # Default limits if not specified by container
+        cpu: "200m"
+        memory: "256Mi"
+      defaultRequest: # Default requests if not specified by container
+        cpu: "50m"
+        memory: "64Mi"
+      max: # Hard maximum for any single container
+        cpu: "1000m"
+        memory: "1Gi"
+      min: # Hard minimum for any single container
+        cpu: "10m"
+        memory: "16Mi"

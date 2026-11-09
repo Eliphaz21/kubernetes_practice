@@ -1,0 +1,14 @@
+# ==============================================================================
+# CSEC ASTU - StorageClass Definition
+# Enables dynamic volume provisioning using standard volume provisioners
+# ==============================================================================
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csec-fast-storage
+  labels:
+    app.kubernetes.io/managed-by: manual
+provisioner: k8s.io/minikube-hostpath # On AWS EKS, this is ebs.csi.aws.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

@@ -1,0 +1,30 @@
+# ==============================================================================
+# CSEC ASTU - Root Kubernetes Kustomization
+# Bundles all core training resources into a single declarative deployment
+# ==============================================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: csec-learning
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: csec-welcome
+      app.kubernetes.io/managed-by: kustomize
+
+resources:
+  - 00-namespace/namespace.yaml
+  - 01-config/configmap.yaml
+  - 01-config/secret.yaml
+  - 02-workloads/backend-deployment.yaml
+  - 02-workloads/frontend-deployment.yaml
+  - 03-networking/backend-service.yaml
+  - 03-networking/frontend-service.yaml
+  - 03-networking/ingress.yaml
+  - 05-security/serviceaccount.yaml
+  - 05-security/rbac.yaml
+  - 05-security/networkpolicy.yaml
+  - 06-resources/resourcequota.yaml
+  - 06-resources/limitrange.yaml
+  - 07-availability/pdb.yaml
+  - 09-advanced/hpa.yaml

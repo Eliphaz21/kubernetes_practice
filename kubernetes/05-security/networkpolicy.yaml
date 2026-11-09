@@ -1,0 +1,29 @@
+# ==============================================================================
+# CSEC ASTU - Zero-Trust NetworkPolicy
+# Enforces isolation: Only Frontend pods can communicate with Backend on port 5000
+# ==============================================================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: csec-backend-network-policy
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: csec-welcome
+      tier: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow traffic ONLY from pods labeled tier: frontend in the same namespace
+    - from:
+        - podSelector:
+            matchLabels:
+              app: csec-welcome
+              tier: frontend
+      ports:
+        - protocol: TCP
+          port: 5000

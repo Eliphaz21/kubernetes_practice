@@ -1,0 +1,30 @@
+# ==============================================================================
+# CSEC ASTU - ConfigMaps for Decoupled Application Configuration
+# Stores non-sensitive key-value pairs injected as environment variables
+# ==============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: csec-backend-config
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+data:
+  PORT: "5000"
+  HOST: "0.0.0.0"
+  NODE_ENV: "production"
+  CORS_ORIGIN: "*"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: csec-frontend-config
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: frontend
+data:
+  APP_ENV: "production"
+  APP_TITLE: "CSEC ASTU Development Division"
+

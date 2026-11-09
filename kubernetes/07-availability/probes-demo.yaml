@@ -1,0 +1,41 @@
+# ==============================================================================
+# CSEC ASTU - Probes Demonstration Workload
+# Shows how Startup, Liveness, and Readiness probes coordinate lifecycle
+# ==============================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: csec-probes-demonstration
+  namespace: csec-learning
+  labels:
+    app: probes-demo
+spec:
+  containers:
+    - name: probe-tester
+      image: busybox:1.36
+      # Creates healthy status file on startup, deletes after 60s to trigger liveness failure
+      command: ["/bin/sh", "-c"]
+      args:
+        - touch /tmp/healthy;
+          sleep 60;
+          rm -f /tmp/healthy;
+          sleep 600;
+      # 1. Startup Probe: Allows slow-initializing apps time to boot
+      startupProbe:
+        exec:
+          command: ["cat", "/tmp/healthy"]
+        initialDelaySeconds: 2
+        periodSeconds: 5
+        failureThreshold: 10
+      # 2. Liveness Probe: Catches deadlock or zombie state
+      livenessProbe:
+        exec:
+          command: ["cat", "/tmp/healthy"]
+        periodSeconds: 5
+        failureThreshold: 2
+      # 3. Readiness Probe: Confirms ready to take traffic
+      readinessProbe:
+        exec:
+          command: ["cat", "/tmp/healthy"]
+        periodSeconds: 5
+        failureThreshold: 2

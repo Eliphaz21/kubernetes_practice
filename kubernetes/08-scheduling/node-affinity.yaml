@@ -1,0 +1,45 @@
+# ==============================================================================
+# CSEC ASTU - Node Affinity Demonstration
+# Guides the kube-scheduler on which worker nodes to place application Pods
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csec-affinity-demo
+  namespace: csec-learning
+  labels:
+    app: affinity-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: affinity-demo
+  template:
+    metadata:
+      labels:
+        app: affinity-demo
+    spec:
+      affinity:
+        nodeAffinity:
+          # Soft Rule: Prefer nodes labeled disktype=ssd, but schedule anyway if not found
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80
+              preference:
+                matchExpressions:
+                  - key: disktype
+                    operator: In
+                    values:
+                      - ssd
+          # Hard Rule: Require Linux architecture
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80

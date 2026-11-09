@@ -1,0 +1,23 @@
+# ==============================================================================
+# CSEC ASTU - Namespace ResourceQuota
+# Prevents any tenant from starving cluster resources (Noisy Neighbor protection)
+# ==============================================================================
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: csec-compute-quota
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+spec:
+  hard:
+    # Maximum compute capacity allocatable to this namespace
+    requests.cpu: "2"
+    requests.memory: "2Gi"
+    limits.cpu: "4"
+    limits.memory: "4Gi"
+    # Object counts
+    pods: "10"
+    services: "5"
+    configmaps: "10"
+    secrets: "10"

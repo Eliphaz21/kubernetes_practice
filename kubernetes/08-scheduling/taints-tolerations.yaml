@@ -1,0 +1,32 @@
+# ==============================================================================
+# CSEC ASTU - Taints & Tolerations Demonstration
+# Demonstrates how worker nodes repel unauthorized pods, and how specialized
+# workloads can tolerate the taint to land on dedicated hardware.
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csec-toleration-demo
+  namespace: csec-learning
+  labels:
+    app: toleration-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toleration-demo
+  template:
+    metadata:
+      labels:
+        app: toleration-demo
+    spec:
+      # Pod toleration matching the node taint: dedicated=production:NoSchedule
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "production"
+          effect: "NoSchedule"
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sleep", "3600"]

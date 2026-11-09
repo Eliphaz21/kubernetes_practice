@@ -1,0 +1,41 @@
+# ==============================================================================
+# CSEC ASTU - PersistentVolumeClaim (PVC) & Demonstration Pod
+# Requests 500Mi of storage and mounts it to /var/log/csec-data
+# ==============================================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: csec-demo-pvc
+  namespace: csec-learning
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: csec-fast-storage
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: csec-storage-writer-pod
+  namespace: csec-learning
+  labels:
+    app: storage-demo
+spec:
+  containers:
+    - name: writer
+      image: busybox:1.36
+      command: ["/bin/sh", "-c"]
+      args:
+        - while true; do
+            echo "$(date) - CSEC ASTU persistent data write" >> /data/audit.log;
+            sleep 10;
+          done
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: /data
+  volumes:
+    - name: persistent-storage
+      persistentVolumeClaim:
+        claimName: csec-demo-pvc

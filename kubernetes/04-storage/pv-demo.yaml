@@ -1,0 +1,21 @@
+# ==============================================================================
+# CSEC ASTU - Static PersistentVolume (PV) Demonstration
+# Demonstrates cluster-scoped persistent storage independent of pod lifecycle
+# ==============================================================================
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: csec-demo-pv
+  labels:
+    type: local
+    storage-tier: fast
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: csec-fast-storage
+  hostPath:
+    path: /data/csec-storage-demo

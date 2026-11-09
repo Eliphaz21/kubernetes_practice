@@ -1,0 +1,34 @@
+# ==============================================================================
+# CSEC ASTU - PodDisruptionBudget (PDB)
+# Guarantees High Availability: At least 1 replica must remain available during
+# node drains, cluster maintenance, or voluntary disruptions.
+# ==============================================================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: csec-backend-pdb
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: csec-welcome
+      tier: backend
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: csec-frontend-pdb
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: frontend
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: csec-welcome
+      tier: frontend
