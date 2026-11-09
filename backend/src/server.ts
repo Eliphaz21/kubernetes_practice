@@ -13,11 +13,14 @@ server.listen(PORT, HOST, () => {
   console.log(`====================================================`);
   console.log(` CSEC Welcome Backend API Server`);
   console.log(` Organization: CSEC ASTU - Development Division`);
-  console.log(` Status: Running`);
-  console.log(` Listening: http://${HOST}:${PORT}`);
-  console.log(` Health:    http://${HOST}:${PORT}/api/health`);
-  console.log(` Ready:     http://${HOST}:${PORT}/api/ready`);
-  console.log(` Welcome:   http://${HOST}:${PORT}/api/welcome`);
+  console.log(` Status:       Running`);
+  console.log(` Local:        http://localhost:${PORT}`);
+  console.log(` Bind Host:    http://${HOST}:${PORT}`);
+  console.log(` Endpoints:`);
+  console.log(`   - Root:     http://localhost:${PORT}/`);
+  console.log(`   - Welcome:  http://localhost:${PORT}/api/welcome`);
+  console.log(`   - Health:   http://localhost:${PORT}/api/health`);
+  console.log(`   - Ready:    http://localhost:${PORT}/api/ready`);
   console.log(`====================================================`);
 });
 
