@@ -22,6 +22,20 @@ export function createApp(): Application {
   // Parse incoming JSON payloads
   app.use(express.json());
 
+  // Root route for friendly browser navigation
+  app.get('/', (_req, res) => {
+    res.status(200).json({
+      service: 'csec-welcome-backend',
+      organization: 'CSEC ASTU - Development Division',
+      status: 'active',
+      endpoints: {
+        welcome: '/api/welcome',
+        health: '/api/health',
+        ready: '/api/ready',
+      },
+    });
+  });
+
   // Mount API routes under /api prefix
   app.use('/api', welcomeRoutes);
 
