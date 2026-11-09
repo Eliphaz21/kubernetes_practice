@@ -1,0 +1,188 @@
+/* ==============================================================================
+   CSEC ASTU - Clean, Restrained University Community Styling
+   Principles: High readability, professional white background, dark blue accent.
+   ============================================================================== */
+
+:root {
+  --bg-color: #ffffff;
+  --text-main: #0f172a;       /* Slate 900 */
+  --text-muted: #475569;      /* Slate 600 */
+  --accent-color: #1e40af;    /* Restrained Dark Blue (Blue 800) */
+  --accent-hover: #1d4ed8;    /* Blue 700 */
+  --border-color: #e2e8f0;    /* Slate 200 */
+  --bg-subtle: #f8fafc;       /* Slate 50 */
+  --error-bg: #fef2f2;        /* Subtle Red */
+  --error-text: #991b1b;      /* Dark Red */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  letter-spacing: -0.01em;
+}
+
+.brand-tag {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem 2rem;
+}
+
+.hero-section {
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hero-heading {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 1.75rem;
+}
+
+.welcome-message {
+  font-size: 1.2rem;
+  color: var(--text-main);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 760px;
+}
+
+.welcome-description {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 760px;
+}
+
+.meta-details {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.meta-item {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.meta-item strong {
+  color: var(--text-main);
+}
+
+/* Status States */
+.status-box {
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+}
+
+.status-loading {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.status-error {
+  background-color: var(--error-bg);
+  border: 1px solid #fecaca;
+  color: var(--error-text);
+}
+
+.btn-retry {
+  margin-top: 0.75rem;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-retry:hover {
+  background-color: var(--accent-hover);
+}
+
+.site-footer {
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-subtle);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .hero-heading {
+    font-size: 2rem;
+  }
+  .hero-subtitle {
+    font-size: 1.15rem;
+  }
+  .welcome-message {
+    font-size: 1.05rem;
+  }
+  .main-content {
+    padding: 2rem 1.25rem;
+  }
+}
+
