@@ -428,40 +428,99 @@ minikube service csec-frontend -n csec-learning
 
 ---
 
-### Step 7: 🧪 Interactive Classroom Labs (Demonstrate DevOps Superpowers)
+### Step 7: 🧪 Interactive Classroom Labs & Chaos Engineering Demos
 
-#### Lab A: Kubernetes Self-Healing (Pod Resurrection)
+Use these real-time interactive demonstrations in class to prove the core superpowers of Kubernetes:
+
+#### 💥 Lab 1: Self-Healing Demo (Pod Resurrection Under Failure)
+Prove to your students that Kubernetes automatically detects and replaces dead containers:
 ```powershell
-# 1. Capture a running backend pod name
+# 1. Capture an active backend pod name dynamically
 $pod = (kubectl get pods -n csec-learning -l tier=backend -o jsonpath='{.items[0].metadata.name}')
+Write-Host "Target pod to kill: $pod" -ForegroundColor Red
 
 # 2. Deliberately terminate the pod
 kubectl delete pod $pod -n csec-learning
 
-# 3. Immediately watch Kubernetes replace it in real time!
+# 3. Immediately watch Kubernetes resurrect a replacement replica in real-time!
 kubectl get pods -n csec-learning -w
 ```
-*Zero downtime! Client requests continue uninterrupted.*
+> *Observation:* Within 1.5 seconds, the ReplicaSet controller detects actual count (1) < desired count (2) and immediately spawns a replacement pod. Client web traffic experiences **zero downtime**!
 
-#### Lab B: Manual Deployment Scaling
+---
+
+#### ⚡ Lab 2: Instant Manual Scaling (Traffic Spike Handling)
+Demonstrate how easily an operations engineer can handle a massive registration rush:
 ```powershell
-# Scale backend to 5 replicas
+# 1. Scale backend from 2 up to 5 replicas
 kubectl scale deployment csec-backend -n csec-learning --replicas=5
 kubectl get pods -n csec-learning -l tier=backend
 
-# Scale back down to 2 replicas
+# 2. Scale back down to 2 replicas when traffic normalizes
 kubectl scale deployment csec-backend -n csec-learning --replicas=2
+kubectl get pods -n csec-learning -l tier=backend
 ```
 
-#### Lab C: Live HPA Stress Test (Autoscaling under load)
+---
+
+#### 💾 Lab 3: Persistent Storage Verification (Data Survives Pod Death)
+Demonstrate that data written to a PersistentVolumeClaim (PVC) survives even if the container is destroyed:
 ```powershell
-# In terminal 1: Watch autoscaler metrics
+# 1. View live logs being written to the persistent volume every 10 seconds:
+kubectl exec -it csec-storage-writer-pod -n csec-learning -- cat /data/audit.log
+
+# 2. Delete the storage writer pod completely:
+kubectl delete pod csec-storage-writer-pod -n csec-learning
+
+# 3. Recreate the pod:
+kubectl apply -f kubernetes/04-storage/pvc-demo.yaml
+
+# 4. Read the file again:
+kubectl exec -it csec-storage-writer-pod -n csec-learning -- cat /data/audit.log
+```
+> *Observation:* All previous logs are **still there**! The new container mounted the exact same persistent disk volume!
+
+---
+
+#### 🔄 Lab 4: Zero-Downtime Rolling Update & Rollback
+Demonstrate how production updates are released without taking down the website:
+```powershell
+# 1. Trigger a rolling update with a new image tag:
+kubectl set image deployment/csec-backend backend=csec-astu/csec-welcome-backend:v1.0.0 -n csec-learning
+
+# 2. Watch the seamless rolling update in real-time:
+kubectl rollout status deployment/csec-backend -n csec-learning
+
+# 3. View deployment revision history:
+kubectl rollout history deployment/csec-backend -n csec-learning
+
+# 4. Instant Rollback (Undo update within 1 second if a bug is found!):
+kubectl rollout undo deployment/csec-backend -n csec-learning
+kubectl rollout status deployment/csec-backend -n csec-learning
+```
+
+---
+
+#### 📈 Lab 5: Live Horizontal Pod Autoscaler (HPA) Stress Test
+Demonstrate automatic cruise control scaling under real traffic load:
+```powershell
+# Terminal 1: Watch the HPA metrics in real-time:
 kubectl get hpa csec-backend-hpa -n csec-learning -w
 
-# In terminal 2: Generate fast load
+# Terminal 2: Generate 1,000 rapid HTTP requests to simulate high user traffic:
 1..1000 | ForEach-Object { curl.exe -s http://localhost:5000/api/welcome > $null }
 ```
-*Watch HPA scale replicas from 2 ➔ 4 ➔ 6 as CPU utilization climbs!*
+> *Observation:* As CPU utilization climbs above **70%**, HPA automatically scales backend replicas from **2 ➔ 4 ➔ 6**! When traffic subsides, it waits 5 minutes before gently scaling back down to 2 replicas!
+
+---
+
+#### 🛡️ Lab 6: Zero-Trust Network Policy Security Enforcement
+Demonstrate that unauthorized rogue pods inside the cluster are blocked from accessing the backend database/API:
+```powershell
+# Run a temporary rogue pod trying to directly probe the backend API:
+kubectl run rogue-pod --rm -it --image=curlimages/curl -n default --restart=Never -- curl -m 3 http://csec-backend.csec-learning.svc.cluster.local:5000/api/health
+```
+> *Observation:* Request **times out**! The `csec-backend-network-policy` strictly rejects traffic that does not originate from authorized frontend pods!
 
 ---
 
