@@ -272,39 +272,58 @@ minikube image ls --format=table | Select-String "csec-welcome"
 
 ---
 
-### Step 4: Apply Kubernetes Manifests (Stage-by-Stage)
-Apply each directory in sequence to watch each architectural layer come to life:
+### Step 4: Apply & Verify Kubernetes Manifests (Stage-by-Stage)
+Apply each directory in sequence, and immediately run the corresponding `kubectl get` command to observe each architectural layer come to life:
 
 ```powershell
-# 00: Create the namespace
+# 00: Namespace Isolation
 kubectl apply -f kubernetes/00-namespace/
+kubectl get namespaces csec-learning
 
-# 01: Deploy ConfigMaps and Secrets
+# 01: ConfigMaps & Secrets (Configuration Decoupling)
 kubectl apply -f kubernetes/01-config/
+kubectl get configmap,secret -n csec-learning
 
-# 02: Launch Backend & Frontend Deployments
+# 02: Workloads & Pods (3 Backend Replicas & 2 Frontend Replicas)
 kubectl apply -f kubernetes/02-workloads/
+kubectl get deployments,replicasets,pods -n csec-learning -o wide
 
-# 03: Expose Services (ClusterIP & NodePort) and Ingress
+# 03: Networking (ClusterIP, NodePort & Ingress Controller)
 kubectl apply -f kubernetes/03-networking/
+kubectl get services,ingress -n csec-learning
 
-# 04: Storage (PV & PVC)
+# 04: Storage (StorageClass, PersistentVolume & Claim)
 kubectl apply -f kubernetes/04-storage/
+kubectl get storageclass,pv,pvc -n csec-learning
 
-# 05: Security (ServiceAccount, RBAC & NetworkPolicies)
+# 05: Security (ServiceAccount, RBAC Roles & NetworkIsolation)
 kubectl apply -f kubernetes/05-security/
+kubectl get serviceaccount,role,rolebinding,networkpolicy -n csec-learning
 
-# 06: Resource Quotas & Limits
+# 06: Resource Governance (ResourceQuotas & LimitRanges)
 kubectl apply -f kubernetes/06-resources/
+kubectl get resourcequota,limitrange -n csec-learning
 
-# 07: High Availability (PodDisruptionBudgets & Probes)
+# 07: High Availability (PodDisruptionBudgets & Health Probes)
 kubectl apply -f kubernetes/07-availability/
+kubectl get poddisruptionbudget,pods -n csec-learning -l app=csec-welcome
 
-# 08: Scheduling (Affinity & Tolerations)
+# 08: Intelligent Scheduling (Node Affinity & Tolerations)
 kubectl apply -f kubernetes/08-scheduling/
+kubectl get pods -n csec-learning -o wide --show-labels
 
-# 09: Horizontal Pod Autoscaler (HPA)
+# 09: Horizontal Pod Autoscaler (Auto-Scaling based on CPU & Memory)
 kubectl apply -f kubernetes/09-advanced/hpa.yaml
+kubectl get hpa -n csec-learning
+```
+
+---
+
+### 🔍 Master All-in-One Inspection Command
+To inspect every active resource across the entire `csec-learning` namespace in a single view:
+
+```powershell
+kubectl get all,configmap,secret,ingress,pvc,hpa -n csec-learning
 ```
 
 *(⚡ Or apply all 10 stages in 1 second using Kustomize: `kubectl apply -k kubernetes/`)*
