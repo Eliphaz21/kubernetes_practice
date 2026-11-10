@@ -21,6 +21,9 @@ resources:
   - 03-networking/backend-service.yaml
   - 03-networking/frontend-service.yaml
   - 03-networking/ingress.yaml
+  - 04-storage/storageclass.yaml
+  - 04-storage/pv-demo.yaml
+  - 04-storage/pvc-demo.yaml
   - 05-security/serviceaccount.yaml
   - 05-security/rbac.yaml
   - 05-security/networkpolicy.yaml
