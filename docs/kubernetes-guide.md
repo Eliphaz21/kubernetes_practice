@@ -74,7 +74,8 @@ Before creating Kubernetes files, initialize your local Minikube cluster and loa
 
 ### 1. Start Minikube
 ```powershell
-minikube start --driver=docker --cpus=2 --memory=4096 --kubernetes-version=v1.30.0
+.\scripts\deploy-minikube.ps1
+# Or manually: minikube start --driver=docker --cpus=2 --memory=4096
 ```
 
 ### 2. Enable Required Addons
