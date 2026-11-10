@@ -200,11 +200,15 @@ npm run build
 
 ---
 
-## 7. Kubernetes Hands-On Practice Guide
+## 7. Hands-On Student Practice Handbooks (Zero-to-Hero Labs)
 
-> 📖 **Primary Student Manual**:  
-> For an interactive, zero-to-hero practice guide with complete copy-pasteable YAML files, exact `kubectl` commands, Minikube instructions, and troubleshooting, read:  
-> 👉 **[Complete Kubernetes Practice Handbook (docs/kubernetes-guide.md)](docs/kubernetes-guide.md)**
+Every tier of this curriculum is built with **1-Click Copy Terminal Commands** so students can delete directories, copy exact code without indentation errors, and build each stage from scratch:
+
+| Practice Handbook | Scope | Key Capabilities | Link |
+| :--- | :--- | :--- | :---: |
+| **Kubernetes Master Guide** | Manifests `00` to `09` | Namespaces, Pods, Deployments, Services, Ingress, PV/PVC, RBAC, HPA | 👉 **[Read Kubernetes Guide](docs/kubernetes-guide.md)** |
+| **Helm Master Guide** | Packaging & Releases | Helm Charting, `_helpers.tpl`, `values-dev.yaml`, `values-prod.yaml`, Rollbacks | 👉 **[Read Helm Guide](docs/helm-guide.md)** |
+| **AWS & Terraform Guide** | Cloud Infrastructure | Multi-AZ VPC, EKS Cluster, ECR Registries, Cloud Deployments, Teardown | 👉 **[Read AWS EKS Guide](docs/aws-eks-guide.md)** |
 
 ---
 
