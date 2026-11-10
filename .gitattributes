@@ -1,0 +1,9 @@
+# GitHub Linguist Language Configuration
+# Ignore Helm Go templates and YAML manifests from language statistics
+*.tpl linguist-detectable=false
+*.yaml linguist-detectable=false
+*.json linguist-detectable=false
+*.ps1 linguist-detectable=true
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true
+*.tf linguist-detectable=true
