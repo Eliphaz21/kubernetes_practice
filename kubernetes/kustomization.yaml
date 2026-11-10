@@ -28,3 +28,4 @@ resources:
   - 06-resources/limitrange.yaml
   - 07-availability/pdb.yaml
   - 09-advanced/hpa.yaml
+

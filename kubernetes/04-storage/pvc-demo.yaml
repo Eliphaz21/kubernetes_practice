@@ -39,3 +39,4 @@ spec:
     - name: persistent-storage
       persistentVolumeClaim:
         claimName: csec-demo-pvc
+

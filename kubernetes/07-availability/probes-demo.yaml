@@ -39,3 +39,4 @@ spec:
           command: ["cat", "/tmp/healthy"]
         periodSeconds: 5
         failureThreshold: 2
+

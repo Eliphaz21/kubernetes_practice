@@ -32,3 +32,4 @@ spec:
     matchLabels:
       app: csec-welcome
       tier: frontend
+

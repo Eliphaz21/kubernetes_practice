@@ -21,3 +21,4 @@ spec:
     services: "5"
     configmaps: "10"
     secrets: "10"
+

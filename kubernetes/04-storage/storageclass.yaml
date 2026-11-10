@@ -12,3 +12,4 @@ provisioner: k8s.io/minikube-hostpath # On AWS EKS, this is ebs.csi.aws.com
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
+
