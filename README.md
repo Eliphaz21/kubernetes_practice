@@ -231,100 +231,148 @@ Each module follows our **13-Step Teaching Format** (What, Why, Complete Code, E
 
 ---
 
-## 9. 🚀 Local Minikube Execution Runbook (Step-by-Step Practice)
+## 9. 🚀 Interactive Hands-On Runbook (Step-by-Step Execution)
 
-Run the full stack immediately on your local machine using Docker Desktop and Minikube without writing any new files. All manifests are pre-configured in `kubernetes/`.
-
-### Step 1: Start Docker Desktop
-1. Launch **Docker Desktop** from your Windows Start Menu or Taskbar.
-2. Wait until the whale icon in your system tray shows **Docker Desktop is running**.
-3. Verify in PowerShell:
-```powershell
-docker ps
-```
-*(Should output table headers `CONTAINER ID   IMAGE   COMMAND ...` with no errors).*
+Follow this interactive, zero-ambiguity runbook to deploy, inspect, and test the full application stack on your local machine using **Docker Desktop & Minikube**.
 
 ---
 
-### Step 2: Start Minikube with Addons
-Run our automation script, which allocates 2 CPUs, 4GB RAM, and enables `ingress` + `metrics-server`:
+### 📋 Student Progress Checklist
+- [ ] **Step 1**: Start Docker Desktop & Verify Daemon
+- [ ] **Step 2**: Provision Local Minikube Cluster with Addons
+- [ ] **Step 3**: Build & Load Local Container Images into Minikube
+- [ ] **Step 4**: Apply Architectural Manifests in Dependency Order (00 ➔ 09)
+- [ ] **Step 5**: Verify Cluster State (`1/1 Running`)
+- [ ] **Step 6**: Launch Live Web Portal in Browser (`http://localhost:8080`)
+- [ ] **Step 7**: Execute Chaos Self-Healing & Autoscaling Labs
+- [ ] **Step 8**: Practice Versioned Helm Releases
+
+---
+
+### Step 1: Start Docker Desktop
+1. Open **Docker Desktop** from your Windows Start Menu or Taskbar.
+2. Wait until the Docker whale icon in your system tray indicates **"Docker Desktop is running"**.
+3. Verify in your PowerShell terminal:
+```powershell
+docker ps
+```
+*Expected Output:* Table headers (`CONTAINER ID   IMAGE   COMMAND ...`) printed with zero errors.
+
+---
+
+### Step 2: Start Minikube with Essential Addons
+Run our automated provisioner script to start Minikube with the Docker driver (2 CPUs, 4GB RAM, `metrics-server` & `ingress`):
+
 ```powershell
 Set-Location -Path "c:\devops"
 .\scripts\deploy-minikube.ps1
 ```
-*(Or manually: `minikube start --driver=docker --cpus=2 --memory=4096 --kubernetes-version=v1.30.0`)*
+
+*(Manual fallback if preferred: `minikube start --driver=docker --cpus=2 --memory=4096`)*
 
 ---
 
 ### Step 3: Build & Load Docker Images into Minikube
-Because Kubernetes pods run inside Minikube's Docker daemon, build and load local images:
+Because Kubernetes pods execute inside Minikube's Docker daemon, build and load local images:
+
 ```powershell
-# 1. Build local frontend and backend images
+# 1. Build local Frontend and Backend images
 .\scripts\build-images.ps1
 
-# 2. Transfer images into Minikube's internal cache
+# 2. Transfer images into Minikube's internal container cache
 minikube image load csec-astu/csec-welcome-backend:latest
 minikube image load csec-astu/csec-welcome-frontend:latest
 
-# 3. Verify images are inside Minikube
+# 3. Verify images are stored safely inside Minikube
 minikube image ls --format=table | Select-String "csec-welcome"
+```
+*Expected Output:*
+```text
+docker.io/csec-astu/csec-welcome-backend:latest
+docker.io/csec-astu/csec-welcome-frontend:latest
 ```
 
 ---
 
-### Step 4: Apply & Verify Kubernetes Manifests (Stage-by-Stage)
+### Step 4: Apply & Inspect Manifests (Stage-by-Stage)
 
 > [!IMPORTANT]
-> **DevOps Best Practice (Dependency Ordering)**:  
-> Apply **Networking (Services)** before **Workloads (Pods)** so that DNS records exist *before* containers start up. This ensures zero startup crashes and 100% clean `1/1 Running` statuses!
+> **Dependency Ordering Principle**:  
+> Always apply **Networking (Services)** before **Workloads (Pods)**. This ensures CoreDNS records exist *before* frontend Nginx boots, guaranteeing instant `1/1 Running` statuses with zero startup crashes!
 
+#### 🔹 Stage 00: Namespace Isolation
 ```powershell
-# 00: Namespace Isolation
 kubectl apply -f kubernetes/00-namespace/
 kubectl get namespaces csec-learning
+```
+*Expected Output:* `csec-learning   Active`
 
-# 01: ConfigMaps & Secrets (Configuration Decoupling)
+#### 🔹 Stage 01: Configuration & Secrets (Decoupled Config)
+```powershell
 kubectl apply -f kubernetes/01-config/
 kubectl get configmap,secret -n csec-learning
+```
+*Expected Output:* `csec-backend-config`, `csec-frontend-config`, and `csec-backend-secret` listed.
 
-# 03: Networking (ClusterIP Services 'csec-backend' & 'backend', NodePort & Ingress)
-# (Applied first so internal DNS is ready before pods boot!)
+#### 🔹 Stage 03: Networking Services (DNS Endpoints First!)
+```powershell
 kubectl apply -f kubernetes/03-networking/
 kubectl get services,ingress -n csec-learning
+```
+*Expected Output:* `csec-backend` (port 5000), `backend` (port 5000 alias), `csec-frontend` (port 80:30080), and `csec-ingress`.
 
-# 02: Workloads & Pods (3 Backend Replicas & 2 Frontend Replicas)
+#### 🔹 Stage 02: Workloads & Pods (Replicas Launching)
+```powershell
 kubectl apply -f kubernetes/02-workloads/
 kubectl get deployments,replicasets,pods -n csec-learning -o wide
+```
+*Expected Output:* `csec-backend` (2/2 ready) and `csec-frontend` (2/2 ready).
 
-# 04: Storage (StorageClass, PersistentVolume & Claim)
+#### 🔹 Stage 04: Storage (Persistent Volumes & Claims)
+```powershell
 kubectl apply -f kubernetes/04-storage/
 kubectl get storageclass,pv,pvc -n csec-learning
+```
+*Expected Output:* `csec-local-storage` StorageClass, `csec-pv-volume` Bound, `csec-app-pvc` Bound.
 
-# 05: Security (ServiceAccount, RBAC Roles & NetworkIsolation)
+#### 🔹 Stage 05: Security & Governance (RBAC & Zero-Trust Network Policy)
+```powershell
 kubectl apply -f kubernetes/05-security/
 kubectl get serviceaccount,role,rolebinding,networkpolicy -n csec-learning
+```
+*Expected Output:* `csec-service-account`, `csec-app-role`, `csec-app-rolebinding`, `csec-backend-netpol`.
 
-# 06: Resource Governance (ResourceQuotas & LimitRanges)
+#### 🔹 Stage 06: Resource Governance (ResourceQuotas & LimitRanges)
+```powershell
 kubectl apply -f kubernetes/06-resources/
 kubectl get resourcequota,limitrange -n csec-learning
+```
+*Expected Output:* `csec-namespace-quota` and `csec-container-limits`.
 
-# 07: High Availability (PodDisruptionBudgets & Health Probes)
+#### 🔹 Stage 07: High Availability (PodDisruptionBudgets & Probes)
+```powershell
 kubectl apply -f kubernetes/07-availability/
-kubectl get poddisruptionbudget,pods -n csec-learning -l app=csec-welcome
+kubectl get poddisruptionbudget -n csec-learning
+```
+*Expected Output:* `csec-backend-pdb` and `csec-frontend-pdb` with `MIN AVAILABLE: 1`.
 
-# 08: Intelligent Scheduling (Node Affinity & Tolerations)
+#### 🔹 Stage 08: Intelligent Scheduling (Node Affinity & Tolerations)
+```powershell
 kubectl apply -f kubernetes/08-scheduling/
 kubectl get pods -n csec-learning -o wide --show-labels
+```
 
-# 09: Horizontal Pod Autoscaler (Auto-Scaling based on CPU & Memory)
+#### 🔹 Stage 09: Horizontal Pod Autoscaler (HPA Cruise Control)
+```powershell
 kubectl apply -f kubernetes/09-advanced/hpa.yaml
 kubectl get hpa -n csec-learning
 ```
+*Expected Output:* `csec-backend-hpa   Deployment/csec-backend   cpu: 70%, memory: 80%   MIN: 2   MAX: 6`.
 
 ---
 
 ### 🔍 Master All-in-One Inspection Command
-To inspect every active resource across the entire `csec-learning` namespace in a single view:
+View every active resource across the entire `csec-learning` namespace in one consolidated view:
 
 ```powershell
 kubectl get all,configmap,secret,ingress,pvc,hpa -n csec-learning
@@ -334,100 +382,119 @@ kubectl get all,configmap,secret,ingress,pvc,hpa -n csec-learning
 
 ---
 
-### Step 5: Verify Running Pods & Services
+### Step 5: Verify Final Pod Health
 ```powershell
-# 1. View all running Pods across Frontend and Backend
-kubectl get pods -n csec-learning -o wide
-
-# 2. View active Services
-kubectl get svc -n csec-learning
-
-# 3. View Horizontal Pod Autoscaler status
-kubectl get hpa -n csec-learning
+kubectl get pods -n csec-learning
 ```
-**Expected Output:**
+**Expected Clean Output:**
 ```text
-NAME                                READY   STATUS    RESTARTS   AGE
-csec-backend-694cb8cb6c-lkbf9        1/1     Running   0          5m
-csec-backend-694cb8cb6c-sjkw9        1/1     Running   0          5m
-csec-frontend-88cfb6c74-2r9cz       1/1     Running   0          2m
-csec-frontend-88cfb6c74-9m8wq       1/1     Running   0          2m
+NAME                             READY   STATUS    RESTARTS   AGE
+csec-backend-694cb8cb6c-lkbf9    1/1     Running   0          10m
+csec-backend-694cb8cb6c-sjkw9    1/1     Running   0          10m
+csec-frontend-88cfb6c74-2r9cz    1/1     Running   0          5m
+csec-frontend-88cfb6c74-9m8wq    1/1     Running   0          5m
 ```
 
 > [!TIP]
-> **Troubleshooting Old Pods**:
-> If you have old crashed pods lingering from earlier tests, purge them instantly with:  
+> **Stale Pod Cleanup**:
+> If you have old stopped pods from earlier testing sessions, purge them with:  
 > `kubectl delete pod -l tier=frontend -n csec-learning`  
-> Kubernetes will immediately spin up fresh, healthy `1/1 Running` replacement pods in 2 seconds!
+> Kubernetes will immediately spin up fresh, healthy replacement pods in 2 seconds!
 
 ---
 
-### Step 6: 🌐 Open & View in Your Browser!
+### Step 6: 🌐 Open & Interact in Your Browser!
 
-#### Option A: Port-Forwarding (Universal Localhost Access — Recommended for Windows)
-Open separate PowerShell terminals and run:
+#### Method 1: Port-Forwarding (Universal Access — Recommended for Windows)
+Open two separate PowerShell tabs:
 ```powershell
-# Terminal 1: Frontend Web Portal (Access at http://localhost:8080):
+# Terminal 1: Forward Frontend Web Application
 kubectl port-forward svc/csec-frontend -n csec-learning 8080:80
 
-# Terminal 2: Backend API (Access at http://localhost:5000):
+# Terminal 2: Forward Backend REST API
 kubectl port-forward svc/csec-backend -n csec-learning 5000:5000
 ```
-- 🌐 Frontend Web Portal: 👉 **[http://localhost:8080](http://localhost:8080)**
-- 🔌 Backend Welcome API: 👉 **[http://localhost:5000/api/welcome](http://localhost:5000/api/welcome)**
-- 🩺 Backend Health API: 👉 **[http://localhost:5000/api/health](http://localhost:5000/api/health)**
 
-#### Option B: Minikube Service URL (Direct Access)
+Now click the live links to test:
+* 🌐 **Frontend Web Portal:** 👉 **[http://localhost:8080](http://localhost:8080)**
+* 🔌 **Backend Welcome API:** 👉 **[http://localhost:5000/api/welcome](http://localhost:5000/api/welcome)**
+* 🩺 **Backend Health API:** 👉 **[http://localhost:5000/api/health](http://localhost:5000/api/health)**
+* 🟢 **Backend Readiness API:** 👉 **[http://localhost:5000/api/ready](http://localhost:5000/api/ready)**
+
+#### Method 2: Minikube Service URL (Direct Browser Launch)
 ```powershell
 minikube service csec-frontend -n csec-learning
 ```
-Minikube will automatically open your default browser to the live **CSEC ASTU Welcome Portal**!
 
 ---
 
-### Step 7: 🧪 Self-Healing Test (Demonstrate Kubernetes Power!)
-Prove self-healing to yourself and your students:
+### Step 7: 🧪 Interactive Classroom Labs (Demonstrate DevOps Superpowers)
+
+#### Lab A: Kubernetes Self-Healing (Pod Resurrection)
 ```powershell
-# 1. Grab a running backend pod name
+# 1. Capture a running backend pod name
 $pod = (kubectl get pods -n csec-learning -l tier=backend -o jsonpath='{.items[0].metadata.name}')
 
 # 2. Deliberately terminate the pod
 kubectl delete pod $pod -n csec-learning
 
-# 3. Immediately watch Kubernetes replace it in 2 seconds!
+# 3. Immediately watch Kubernetes replace it in real time!
 kubectl get pods -n csec-learning -w
 ```
+*Zero downtime! Client requests continue uninterrupted.*
+
+#### Lab B: Manual Deployment Scaling
+```powershell
+# Scale backend to 5 replicas
+kubectl scale deployment csec-backend -n csec-learning --replicas=5
+kubectl get pods -n csec-learning -l tier=backend
+
+# Scale back down to 2 replicas
+kubectl scale deployment csec-backend -n csec-learning --replicas=2
+```
+
+#### Lab C: Live HPA Stress Test (Autoscaling under load)
+```powershell
+# In terminal 1: Watch autoscaler metrics
+kubectl get hpa csec-backend-hpa -n csec-learning -w
+
+# In terminal 2: Generate fast load
+1..1000 | ForEach-Object { curl.exe -s http://localhost:5000/api/welcome > $null }
+```
+*Watch HPA scale replicas from 2 ➔ 4 ➔ 6 as CPU utilization climbs!*
 
 ---
 
-## 10. ⎈ Helm Practice Runbook on Minikube
+### Step 8: ⎈ Practice with Helm on Minikube
 
-When practicing with Helm, manage the entire application as a versioned release:
+When you are ready to test Helm packaging:
 
 ```powershell
-# 1. Validate the chart syntax
+# 1. Lint the chart syntax
 helm lint .\helm\csec-welcome
 
-# 2. Render templates locally to verify generated YAML
+# 2. Render templates locally
 helm template csec-welcome .\helm\csec-welcome -f .\helm\csec-welcome\values-dev.yaml
 
-# 3. Deploy the application release to Minikube using Dev values
+# 3. Deploy the application as a Helm release
 helm upgrade --install csec-welcome .\helm\csec-welcome `
   --namespace csec-learning `
   --create-namespace `
   -f .\helm\csec-welcome\values-dev.yaml
 
-# 4. View your active Helm release
+# 4. View active Helm releases
 helm list -n csec-learning
 helm status csec-welcome -n csec-learning
 ```
 
 ---
 
-## 11. 🧹 Local Cleanup (Free Laptop RAM)
-When your study or teaching session is complete:
+### Step 9: 🧹 One-Click Reset & Cleanup
+When you want to stop Minikube and free your laptop's RAM:
 ```powershell
 .\scripts\cleanup-minikube.ps1
+```
+*(Stops the Minikube cluster and preserves all your code for next time).*
 ```
 *(Stops Minikube and frees your system CPU and memory).*
 
