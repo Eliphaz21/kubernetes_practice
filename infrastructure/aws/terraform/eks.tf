@@ -82,6 +82,11 @@ resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOn
   role_name  = aws_iam_role.node_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "node_ElasticLoadBalancingFullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+  role_name  = aws_iam_role.node_role.name
+}
+
 # ------------------------------------------------------------------------------
 # 4. Managed Node Group (Worker Nodes in Private Subnets)
 # ------------------------------------------------------------------------------
@@ -107,7 +112,8 @@ resource "aws_eks_node_group" "main" {
   depends_on = [
     aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly
+    aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.node_ElasticLoadBalancingFullAccess
   ]
 
   tags = {

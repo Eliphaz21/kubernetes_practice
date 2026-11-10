@@ -17,12 +17,26 @@ if ($confirmation -ne "yes") {
     exit 0
 }
 
+# 1. First remove the Helm chart and AWS Ingress / ALB to release VPC ENIs
+Write-Host "`n[1/4] Removing Kubernetes Helm releases and Ingress..." -ForegroundColor Yellow
+try {
+    helm uninstall csec-welcome -n csec-learning 2>$null
+    helm uninstall aws-load-balancer-controller -n kube-system 2>$null
+    Write-Host "Waiting 25 seconds for AWS to deregister Application Load Balancers and release ENIs..." -ForegroundColor White
+    Start-Sleep -Seconds 25
+} catch {
+    Write-Host "Helm release already uninstalled or not reachable. Proceeding to Terraform..." -ForegroundColor Gray
+}
+
+# 2. Navigate to Terraform directory
 Set-Location -Path "c:\devops\infrastructure\aws\terraform"
 
-Write-Host "`n[1/3] Running Terraform Plan (Destroy mode)..." -ForegroundColor Yellow
+# 3. Running Terraform Plan in destroy mode
+Write-Host "`n[2/4] Running Terraform Plan (Destroy mode)..." -ForegroundColor Yellow
 terraform plan -destroy
 
-Write-Host "`n[2/3] Destroying AWS resources..." -ForegroundColor Red
+# 4. Destroy AWS Resources
+Write-Host "`n[3/4] Destroying AWS resources..." -ForegroundColor Red
 terraform destroy -auto-approve
 
 if ($LASTEXITCODE -eq 0) {
@@ -33,4 +47,3 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "`nError during destruction. Check the terraform output above." -ForegroundColor Red
 }
-
