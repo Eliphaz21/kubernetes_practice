@@ -1,0 +1,16 @@
+apiVersion: v2
+name: csec-welcome
+description: Production-grade Helm chart for the CSEC ASTU Welcome application (React + Node.js)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - csec
+  - astu
+  - devops
+  - kubernetes
+  - react
+  - express
+maintainers:
+  - name: CSEC ASTU Development Division
+    email: devops@csec-astu.org

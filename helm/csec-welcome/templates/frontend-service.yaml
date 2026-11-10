@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "csec-welcome.fullname" . }}-frontend
+  labels:
+    {{- include "csec-welcome.labels" . | nindent 4 }}
+    tier: frontend
+spec:
+  type: {{ .Values.frontend.service.type }}
+  selector:
+    {{- include "csec-welcome.selectorLabels" . | nindent 4 }}
+    tier: frontend
+  ports:
+    - name: http
+      port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.service.port }}
+      {{- if and (eq .Values.frontend.service.type "NodePort") .Values.frontend.service.nodePort }}
+      nodePort: {{ .Values.frontend.service.nodePort }}
+      {{- end }}
+      protocol: TCP

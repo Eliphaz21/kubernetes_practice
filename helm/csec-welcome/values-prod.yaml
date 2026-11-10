@@ -1,0 +1,50 @@
+# ==============================================================================
+# CSEC ASTU - Production / AWS EKS Overrides
+# Hardened for High Availability, Horizontal Autoscaling, and AWS Load Balancer
+# ==============================================================================
+
+global:
+  environment: "production"
+
+backend:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/csec-astu/backend
+    pullPolicy: Always
+    tag: "v1.0.0"
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+frontend:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/csec-astu/frontend
+    pullPolicy: Always
+    tag: "v1.0.0"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+  host: "welcome.csec-astu.org"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70

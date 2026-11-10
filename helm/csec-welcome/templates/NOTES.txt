@@ -1,0 +1,25 @@
+==============================================================================
+ CSEC Welcome Application - Deployed via Helm
+ Organization: CSEC ASTU - Development Division
+ Release:      {{ .Release.Name }}
+ Namespace:    {{ .Release.Namespace }}
+==============================================================================
+
+1. Check Pod Status:
+   kubectl get pods -n {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }}"
+
+2. Check Ingress / External Access:
+{{- if .Values.ingress.enabled }}
+   Add to your hosts file if using Minikube:
+   $(minikube ip)  {{ .Values.ingress.host }}
+
+   Then open in your browser:
+   http://{{ .Values.ingress.host }}
+{{- else }}
+   NodePort Access (Minikube):
+   minikube service {{ include "csec-welcome.fullname" . }}-frontend -n {{ .Release.Namespace }}
+{{- end }}
+
+3. Check API Endpoints:
+   curl http://{{ .Values.ingress.host }}/api/health
+   curl http://{{ .Values.ingress.host }}/api/welcome
