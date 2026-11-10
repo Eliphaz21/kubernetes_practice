@@ -74,3 +74,4 @@ Write-Host " Note: It takes 2-3 minutes for AWS Application Load Balancers (ALB)
 Write-Host " Run 'kubectl get ingress -n csec-learning' to view the public URL." -ForegroundColor White
 Write-Host " When finished, run '.\scripts\cleanup-aws.ps1' to destroy resources." -ForegroundColor Red
 Write-Host "====================================================" -ForegroundColor Cyan
+
