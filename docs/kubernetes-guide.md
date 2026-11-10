@@ -689,10 +689,10 @@ metadata:
   labels:
     app: csec-welcome
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
     - host: csec.local
       http:
@@ -724,10 +724,10 @@ metadata:
   labels:
     app: csec-welcome
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
     - host: csec.local
       http:
