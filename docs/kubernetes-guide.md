@@ -601,6 +601,25 @@ spec:
       port: 5000
       targetPort: 5000
       protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: csec-welcome
+    tier: backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      protocol: TCP
 '@ | Set-Content -Path "c:\devops\kubernetes\03-networking\backend-service.yaml" -Encoding UTF8
 ```
 
@@ -610,6 +629,25 @@ apiVersion: v1
 kind: Service
 metadata:
   name: csec-backend
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: csec-welcome
+    tier: backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
   namespace: csec-learning
   labels:
     app: csec-welcome
