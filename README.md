@@ -314,19 +314,19 @@ kubectl get configmap,secret -n csec-learning
 ```
 *Expected Output:* `csec-backend-config`, `csec-frontend-config`, and `csec-backend-secret` listed.
 
-#### 🔹 Stage 03: Networking Services (DNS Endpoints First!)
-```powershell
-kubectl apply -f kubernetes/03-networking/
-kubectl get services,ingress -n csec-learning
-```
-*Expected Output:* `csec-backend` (port 5000), `backend` (port 5000 alias), `csec-frontend` (port 80:30080), and `csec-ingress`.
-
 #### 🔹 Stage 02: Workloads & Pods (Replicas Launching)
 ```powershell
 kubectl apply -f kubernetes/02-workloads/
 kubectl get deployments,replicasets,pods -n csec-learning -o wide
 ```
 *Expected Output:* `csec-backend` (2/2 ready) and `csec-frontend` (2/2 ready).
+
+#### 🔹 Stage 03: Networking Services (ClusterIP, NodePort & Ingress)
+```powershell
+kubectl apply -f kubernetes/03-networking/
+kubectl get services,ingress -n csec-learning
+```
+*Expected Output:* `service/csec-backend` (port 5000), `service/backend` (port 5000 alias), `service/csec-frontend` (port 80:30080), and `ingress/csec-ingress`.
 
 #### 🔹 Stage 04: Storage (Persistent Volumes & Claims)
 ```powershell
