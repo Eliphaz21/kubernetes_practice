@@ -483,7 +483,6 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
                 - AUDIT_WRITE
                 - KILL
           envFrom:
@@ -555,7 +554,6 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
                 - AUDIT_WRITE
                 - KILL
           envFrom:

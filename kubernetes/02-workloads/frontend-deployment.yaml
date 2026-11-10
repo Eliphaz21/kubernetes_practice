@@ -67,7 +67,6 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
                 - AUDIT_WRITE
                 - KILL
           # ConfigMap environment injection
