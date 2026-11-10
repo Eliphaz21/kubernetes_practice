@@ -20,7 +20,10 @@ services:
       - NODE_ENV=production
       - CORS_ORIGIN=*
     networks:
-      - csec-network
+      csec-network:
+        aliases:
+          - backend
+          - csec-backend
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:5000/api/health || exit 1"]
       interval: 10s

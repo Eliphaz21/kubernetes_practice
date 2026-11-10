@@ -1,7 +1,8 @@
 # ==============================================================================
 # CSEC ASTU - Backend ClusterIP Service
 # Internal stable virtual IP and DNS name for the Backend API
-# DNS: csec-backend.csec-learning.svc.cluster.local:5000
+# Primary DNS: csec-backend.csec-learning.svc.cluster.local:5000
+# Alias DNS:   backend.csec-learning.svc.cluster.local:5000
 # ==============================================================================
 apiVersion: v1
 kind: Service
@@ -21,4 +22,22 @@ spec:
       port: 5000
       targetPort: 5000
       protocol: TCP
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: csec-learning
+  labels:
+    app: csec-welcome
+    tier: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: csec-welcome
+    tier: backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      protocol: TCP
