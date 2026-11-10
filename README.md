@@ -273,7 +273,10 @@ minikube image ls --format=table | Select-String "csec-welcome"
 ---
 
 ### Step 4: Apply & Verify Kubernetes Manifests (Stage-by-Stage)
-Apply each directory in sequence, and immediately run the corresponding `kubectl get` command to observe each architectural layer come to life:
+
+> [!IMPORTANT]
+> **DevOps Best Practice (Dependency Ordering)**:  
+> Apply **Networking (Services)** before **Workloads (Pods)** so that DNS records exist *before* containers start up. This ensures zero startup crashes and 100% clean `1/1 Running` statuses!
 
 ```powershell
 # 00: Namespace Isolation
@@ -284,16 +287,14 @@ kubectl get namespaces csec-learning
 kubectl apply -f kubernetes/01-config/
 kubectl get configmap,secret -n csec-learning
 
-# 02: Workloads & Pods (3 Backend Replicas & 2 Frontend Replicas)
-kubectl apply -f kubernetes/02-workloads/
-kubectl get deployments,replicasets,pods -n csec-learning -o wide
-
-# 03: Networking (ClusterIP with 'csec-backend' & 'backend' DNS aliases, NodePort & Ingress)
+# 03: Networking (ClusterIP Services 'csec-backend' & 'backend', NodePort & Ingress)
+# (Applied first so internal DNS is ready before pods boot!)
 kubectl apply -f kubernetes/03-networking/
 kubectl get services,ingress -n csec-learning
 
-# 💡 Pro-Tip: If frontend pods were started before networking was applied, restart them immediately:
-kubectl rollout restart deployment csec-frontend -n csec-learning
+# 02: Workloads & Pods (3 Backend Replicas & 2 Frontend Replicas)
+kubectl apply -f kubernetes/02-workloads/
+kubectl get deployments,replicasets,pods -n csec-learning -o wide
 
 # 04: Storage (StorageClass, PersistentVolume & Claim)
 kubectl apply -f kubernetes/04-storage/
@@ -347,20 +348,17 @@ kubectl get hpa -n csec-learning
 **Expected Output:**
 ```text
 NAME                                READY   STATUS    RESTARTS   AGE
-csec-backend-7db94c6f9-2x8pl        1/1     Running   0          45s
-csec-backend-7db94c6f9-7qjlm        1/1     Running   0          45s
-csec-backend-7db94c6f9-w9k2r        1/1     Running   0          45s
-csec-frontend-5d8f6cc97-8nv4j       1/1     Running   0          40s
-csec-frontend-5d8f6cc97-m2cpx       1/1     Running   0          40s
+csec-backend-694cb8cb6c-lkbf9        1/1     Running   0          5m
+csec-backend-694cb8cb6c-sjkw9        1/1     Running   0          5m
+csec-frontend-88cfb6c74-2r9cz       1/1     Running   0          2m
+csec-frontend-88cfb6c74-9m8wq       1/1     Running   0          2m
 ```
 
 > [!TIP]
-> **Troubleshooting Pod Statuses**:
-> - **`CrashLoopBackOff` on Frontend**: Nginx was waiting for the backend service DNS. Simply run:  
->   `kubectl rollout restart deployment csec-frontend -n csec-learning`
-> - **`ImagePullBackOff`**: Images are not yet loaded in Minikube. Run:  
->   `minikube image load csec-astu/csec-welcome-backend:latest`  
->   `minikube image load csec-astu/csec-welcome-frontend:latest`
+> **Troubleshooting Old Pods**:
+> If you have old crashed pods lingering from earlier tests, purge them instantly with:  
+> `kubectl delete pod -l tier=frontend -n csec-learning`  
+> Kubernetes will immediately spin up fresh, healthy `1/1 Running` replacement pods in 2 seconds!
 
 ---
 
