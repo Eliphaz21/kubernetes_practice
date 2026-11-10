@@ -1,0 +1,34 @@
+# ==============================================================================
+# CSEC ASTU - Prometheus Stack Helm Values (kube-prometheus-stack)
+# Deploys Prometheus, Alertmanager, Node Exporter, and kube-state-metrics
+# ==============================================================================
+
+# Disable Grafana inside the Prometheus chart if deploying standalone Grafana
+grafana:
+  enabled: true
+  adminPassword: "csec-training-admin-2026"
+  service:
+    type: NodePort
+    nodePort: 30090
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+    scrapeInterval: "15s"
+    evaluationInterval: "15s"
+    retention: "7d"
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    retention: "120h"
