@@ -33,3 +33,4 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "`nError during destruction. Check the terraform output above." -ForegroundColor Red
 }
+
