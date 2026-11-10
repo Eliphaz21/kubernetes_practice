@@ -288,9 +288,12 @@ kubectl get configmap,secret -n csec-learning
 kubectl apply -f kubernetes/02-workloads/
 kubectl get deployments,replicasets,pods -n csec-learning -o wide
 
-# 03: Networking (ClusterIP, NodePort & Ingress Controller)
+# 03: Networking (ClusterIP with 'csec-backend' & 'backend' DNS aliases, NodePort & Ingress)
 kubectl apply -f kubernetes/03-networking/
 kubectl get services,ingress -n csec-learning
+
+# 💡 Pro-Tip: If frontend pods were started before networking was applied, restart them immediately:
+kubectl rollout restart deployment csec-frontend -n csec-learning
 
 # 04: Storage (StorageClass, PersistentVolume & Claim)
 kubectl apply -f kubernetes/04-storage/
@@ -351,28 +354,36 @@ csec-frontend-5d8f6cc97-8nv4j       1/1     Running   0          40s
 csec-frontend-5d8f6cc97-m2cpx       1/1     Running   0          40s
 ```
 
+> [!TIP]
+> **Troubleshooting Pod Statuses**:
+> - **`CrashLoopBackOff` on Frontend**: Nginx was waiting for the backend service DNS. Simply run:  
+>   `kubectl rollout restart deployment csec-frontend -n csec-learning`
+> - **`ImagePullBackOff`**: Images are not yet loaded in Minikube. Run:  
+>   `minikube image load csec-astu/csec-welcome-backend:latest`  
+>   `minikube image load csec-astu/csec-welcome-frontend:latest`
+
 ---
 
 ### Step 6: 🌐 Open & View in Your Browser!
 
-#### Option A: Minikube Service URL (Direct Access)
-Run this command to get a direct browser link to the frontend:
+#### Option A: Port-Forwarding (Universal Localhost Access — Recommended for Windows)
+Open separate PowerShell terminals and run:
+```powershell
+# Terminal 1: Frontend Web Portal (Access at http://localhost:8080):
+kubectl port-forward svc/csec-frontend -n csec-learning 8080:80
+
+# Terminal 2: Backend API (Access at http://localhost:5000):
+kubectl port-forward svc/csec-backend -n csec-learning 5000:5000
+```
+- 🌐 Frontend Web Portal: 👉 **[http://localhost:8080](http://localhost:8080)**
+- 🔌 Backend Welcome API: 👉 **[http://localhost:5000/api/welcome](http://localhost:5000/api/welcome)**
+- 🩺 Backend Health API: 👉 **[http://localhost:5000/api/health](http://localhost:5000/api/health)**
+
+#### Option B: Minikube Service URL (Direct Access)
 ```powershell
 minikube service csec-frontend -n csec-learning
 ```
 Minikube will automatically open your default browser to the live **CSEC ASTU Welcome Portal**!
-
-#### Option B: Port-Forwarding (Universal Access)
-```powershell
-# Open Frontend in Terminal 1 (Access at http://localhost:8080):
-kubectl port-forward svc/csec-frontend -n csec-learning 8080:80
-
-# Open Backend API in Terminal 2 (Access at http://localhost:5000):
-kubectl port-forward svc/csec-backend -n csec-learning 5000:5000
-```
-- Frontend Web App: 👉 **`http://localhost:8080`**
-- Backend Health API: 👉 **`http://localhost:5000/api/health`**
-- Backend Welcome API: 👉 **`http://localhost:5000/api/welcome`**
 
 ---
 
